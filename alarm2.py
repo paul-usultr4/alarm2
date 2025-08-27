@@ -10,9 +10,9 @@ CLEAR_AND_RETURN = "\033[H"
 
 window = tk.Tk()
 window.title("Scrappy Alarm")
-window.geometry("300x300")  # Fixed: use 'x' not '*'
+window.geometry("300x300") 
 
-# --- Add input boxes ---
+# Adding input boxes
 tk.Label(window, text="Hours:").pack()
 hours_entry = tk.Entry(window)
 hours_entry.pack()
@@ -24,11 +24,10 @@ minutes_entry.pack()
 tk.Label(window, text="Seconds:").pack()
 seconds_entry = tk.Entry(window)
 seconds_entry.pack()
-# -----------------------
 
-def on_click():
+def on_click(alarm_sound):
     print("Always ready to serve")
-    # sound.stop()  # Commented out, as 'sound' is not defined here
+    alarm_sound.stop()
 
 def start_alarm():
     hours = int(hours_entry.get())
@@ -57,11 +56,13 @@ def alarm(hours, minutes, seconds):
         hours += 24
     total_seconds = hours * 3600 + minutes * 60 + seconds
     time_elapsed = random.uniform(total_seconds / 2, 3 * total_seconds / 4)
+    real_time_elapsed=0
 
     print(CLEAR)
     while time_elapsed < total_seconds:
         time.sleep(1)
         time_elapsed += 1
+        real_time_elapsed+=1
 
         time_left = total_seconds - time_elapsed
         hours_left = int(time_left // 3600)
@@ -71,7 +72,11 @@ def alarm(hours, minutes, seconds):
         print(f"{CLEAR_AND_RETURN}Alarm rings in:{hours_left:02d}:{minutes_left:02d}:{seconds_left:02d}")
 
     print("Hey, just ringing here nothing to see. You can continue with whatever you were doing")
-    sound = us.Sound("alarm.mp3")
-    sound.play(loop=True)
+    alarm_sound = us.Sound("alarm.mp3")
+    alarm_sound.play(loop=True)
+    while real_time_elapsed<total_seconds:
+        time.sleep(1)
+        real_time_elapsed+=1
+    
 
 window.mainloop()
